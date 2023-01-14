@@ -59,6 +59,11 @@
                 <span *ngFor="let path of currentDirItems; let idx = index" class="path-item"><a href="#" (click)="directoryNameClick(constructPathFromPrefix(idx))">{{path}}</a><span class="path-separator"><span *ngIf="!path.endsWith('/')">/</span></span></span>
             </div>
 
+            <div title="Upload Log" class="upload-button">
+                <label for="files" class="btn"><i class="fa fa-upload"></i></label>
+                <input id="files" style="visibility:hidden; width: 0;" type="file" (change)="handleFileInput($event.target.files)">
+            </div>
+
             <div class="search-pane">
                 <span class="tool-button" [class.tool-button-pressed]="filterOpened"
                       title="Search" (click)="toggleSearch()"><i class="fas fa-search"></i></span>
