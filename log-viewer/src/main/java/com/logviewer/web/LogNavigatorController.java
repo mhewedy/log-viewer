@@ -100,8 +100,6 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
                 item.attr.put("favorite", true);
         }
 
-        res.sort(Comparator.naturalOrder());
-
         return res;
     }
 

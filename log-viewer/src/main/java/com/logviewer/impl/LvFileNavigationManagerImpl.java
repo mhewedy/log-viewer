@@ -73,6 +73,7 @@ public class LvFileNavigationManagerImpl implements LvFileNavigationManager {
 
                 return fileAccessManager.isFileVisible(f);
             })
+                    .sorted((p1, p2) -> Long.compare(p2.toFile().lastModified(), p1.toFile().lastModified()))
                     .map(LvFsItemImpl::create)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
