@@ -51,6 +51,8 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
 
     defaultDir: string;
 
+    fileToUpload: File | null = null;
+
     constructor(
         private http: HttpClient,
         public fwService: FavoritesService,
@@ -117,8 +119,8 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
         return false;
     }
 
-    selectDir(dir: string) {
-        if (dir === this.currentDir) {
+    selectDir(dir: string, force: boolean = false) {
+        if (dir === this.currentDir && !force) {
             return;
         }
 
@@ -457,6 +459,22 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
         }
 
         this.cancelEditing();
+    }
+
+    handleFileInput(files: FileList) {
+        this.fileToUpload = files.item(0);
+
+        const formData: FormData = new FormData();
+        formData.append('file', this.fileToUpload, this.fileToUpload.name);
+
+        this.dirContentLoading.process(
+            this.http.post<any>('rest/uploader/upload', formData, {params: {dir: this.currentDir}}),
+            resp => {
+                setTimeout(() => {
+                    this.selectDir(this.currentDir, true);
+                }, 200);
+            }
+        );
     }
 }
 

@@ -47,7 +47,8 @@ public class LogViewerServlet extends HttpServlet {
         restHandlers = Utils.newMap(
                 "navigator", injectDeps(logContext, new LogNavigatorController()),
                 "ws-emulator", injectDeps(logContext, new WebsocketEmulationController()),
-                "log-view", injectDeps(logContext, new LogViewController())
+                "log-view", injectDeps(logContext, new LogViewController()),
+                "uploader", injectDeps(logContext, new LogUploaderController())
         );
     }
 

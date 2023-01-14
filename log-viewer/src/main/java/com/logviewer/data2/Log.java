@@ -37,7 +37,7 @@ public class Log implements LogView {
 
     private static final Logger LOG = LoggerFactory.getLogger(Log.class);
 
-    private static final String[] GZIP_EXTENSIONS = new String[]{".tgz", ".tar.gz", ".gzip"};
+    private static final String[] GZIP_EXTENSIONS = new String[]{".tgz", ".gz", ".tar.gz", ".gzip"};
 
     public static Function<String, String> DEFAULT_ID_GENERATOR = path -> {
         try {
@@ -162,6 +162,7 @@ public class Log implements LogView {
                 fos.write(buffer, 0, len);
             }
         }
+        LOG.info("unpacking archive file: {} to : {}", this.file, tempFile.toPath());
 
         this.file = tempFile.toPath();
     }
