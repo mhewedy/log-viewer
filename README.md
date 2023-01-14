@@ -20,6 +20,7 @@ machines, all machines must have run LogViewer.
 1. Folding secondary information like unmeaning parts of exception stacktraces, full name of logger.
 1. Detecting the format of the log file.
 1. A permanent link to a log position. A user can copy a link to the current position and send it to another user.
+1. Upload log files to do log analysis on the go
 
 [Demo video](https://www.youtube.com/watch?v=OE7nAiNX07Q)
 
