@@ -64,11 +64,13 @@ export class WebSocketConnection implements ConnectionService {
                 let message = null;
                 if (ws.onmessage == null) {
                     message = 'Failed to open websocket: <a href="#">' + ws.url + '</a>\n'
-                        + 'Probably, you use a proxy that doesn\'t support HTTP 1.1,\nyou can switch LogViewer to ' +
-                        'no-websocket mode using "<b>log-viewer.use-web-socket=false</b>" property';
+                        + 'Probably, you use a proxy that doesn\'t support HTTP 1.1,\nWill switch to rest api emulator instead!' +
+                        '\nTo rollback, remove local storage key "<b>disable-websocket</b>"' +
+                        '\n\n<b>Please reload your browser to enable api emulator mode</b>';
                 }
 
                 this.onError(message);
+                localStorage.setItem('disable-websocket', 'true');
             }
         };
 

@@ -59,7 +59,7 @@ export class CommunicationService implements OnDestroy {
         LvUtils.assert(!this.connection && !this.handler);
 
         let webSocketPath = (<any>window).webSocketPath;
-        if (webSocketPath) {
+        if (webSocketPath && this.isWebSocketsNotDisabled()) {
             this.connection = new WebSocketConnection(webSocketPath, (d) => this.onData(d),
                 (e) => this.onError(e),
                 () => this.close());
@@ -73,6 +73,10 @@ export class CommunicationService implements OnDestroy {
         this.handler = handler;
 
         this.connection.startup();
+    }
+
+    private isWebSocketsNotDisabled() {
+        return localStorage.getItem('disable-websocket') != 'true';
     }
 
     send(command: Command) {
