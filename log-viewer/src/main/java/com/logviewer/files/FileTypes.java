@@ -72,13 +72,17 @@ public class FileTypes {
             Pattern.compile(".*\\.properties", Pattern.CASE_INSENSITIVE),
             "assets/file-types/properties.png");
 
+    public static final FileType TMP = new FileType("tmp",
+            Pattern.compile(".*\\.(tmp|temp)", Pattern.CASE_INSENSITIVE),
+            "assets/file-types/text.png");
+
     public static final FileType UNKNOWN = new FileType("unknown",
             Pattern.compile(".*"),
             "assets/file-types/unknown.png");
 
 
     private static final FileType[] ALL_TYPES = new FileType[]{LOG, OUT, TEXT, JAVA, JAVA_SCRIPT, TYPE_SCRIPT, JSON, JSP, HTML,
-            JSPX, XML, PROPS, ZIP, TGZ, GZ, UNKNOWN};
+            JSPX, XML, PROPS, ZIP, TGZ, GZ, TMP, UNKNOWN};
 
     static {
         Set<String> ids = new HashSet<>();
