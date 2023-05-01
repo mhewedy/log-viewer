@@ -46,6 +46,16 @@
                                 </goals>
                             </execution>
                             <execution>
+                                <id>npm install</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>build</id>
                                 <phase>prepare-package</phase>
                                 <goals>
