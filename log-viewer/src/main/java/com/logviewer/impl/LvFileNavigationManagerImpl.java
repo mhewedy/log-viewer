@@ -119,7 +119,7 @@ public class LvFileNavigationManagerImpl implements LvFileNavigationManager {
             BufferedReader br =
                     new BufferedReader(Channels.newReader(snapshot.getChannel(), StandardCharsets.UTF_8));
             return br.lines().parallel().anyMatch(it -> it.contains(filter));
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOG.error(e.getMessage());
             return false;
         }
