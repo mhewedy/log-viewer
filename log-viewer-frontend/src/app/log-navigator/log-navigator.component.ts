@@ -129,10 +129,8 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
         this.dirContent = null;
         this.visibleDirItems = null;
 
-        this.closeSearch();
-
         this.dirContentLoading.process(
-            this.http.get<DirContent>('rest/navigator/listDir', {params: {dir}}),
+            this.http.get<DirContent>('rest/navigator/listDir', {params: {dir, 'filter': this.typedText}}),
             items => {
                 if (dir !== this.currentDir) {
                     return;
@@ -147,7 +145,7 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
         this.typedText = '';
         this.filterOpened = false;
         this.rootElement.nativeElement.focus();
-        this.doSearch();
+        this.selectDir(this.currentDir, true);
     }
 
     private openSearch() {
@@ -174,20 +172,9 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
 
         if (!this.dirContent?.content) { return; }
 
-        let filter = this.typedText;
-
         for (let item of this.dirContent.content) {
             let name = this.currentDir ? item.name : item.path;
-            
-            let nameHtml: string;
-
-            if (!filter) {
-                nameHtml = LvUtils.escapeHtml(name);
-            } else {
-                nameHtml = LogNavigatorComponent.highlightOccurrence(name, filter);
-                if (!nameHtml) { continue; }
-            }
-
+            let nameHtml = LvUtils.escapeHtml(name);
             this.visibleDirItems.push({item, nameHtml});
         }
 
@@ -410,7 +397,7 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
     }
 
     filterChanged() {
-        this.doSearch();
+        this.selectDir(this.currentDir, true);
     }
 
     startPathEditing() {
