@@ -1,6 +1,6 @@
 FROM maven:3.8-openjdk-17-slim as build
 
-MAINTAINER Mohammad Hewedy (mhewedy@gmail.com)
+LABEL org.opencontainers.image.authors="mhewedy@gmail.com"
 
 WORKDIR /build
 
