@@ -275,7 +275,7 @@ public class Log implements LogView {
             return res;
         }
 
-        private SeekableByteChannel getChannel() throws IOException {
+        public SeekableByteChannel getChannel() throws IOException {
             if (channel == null) {
                 if (error != null)
                     throw new IOException(error);

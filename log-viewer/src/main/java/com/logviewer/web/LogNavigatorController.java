@@ -3,6 +3,7 @@ package com.logviewer.web;
 import com.logviewer.api.LvFileAccessManager;
 import com.logviewer.api.LvFileNavigationManager;
 import com.logviewer.data2.FavoriteLogService;
+import com.logviewer.data2.LogService;
 import com.logviewer.files.FileType;
 import com.logviewer.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
     private LvFileAccessManager fileAccessManager;
     @Autowired
     private Environment environment;
+    @Autowired
+    private LogService logService;
 
     @Endpoint
     public RestInitState initState() {
@@ -57,7 +60,7 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
             }
             
             res.initDir = initDir == null ? null : initDir.toString();
-            res.initDirContent = getDirContent(initDir);
+            res.initDirContent = getDirContent(initDir, null);
         }
 
         return res;
@@ -70,12 +73,12 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
     /**
      * @return {error: string, content: FsItem[]}
      */
-    private RestContent getDirContent(@Nullable Path dir) {
+    private RestContent getDirContent(@Nullable Path dir, @Nullable String filter) {
         if (!isFileTreeAllowed())
             return new RestContent("File system navigation is disabled");
 
         try {
-            List<LvFileNavigationManager.LvFsItem> items = fileManager.getChildren(dir);
+            List<LvFileNavigationManager.LvFsItem> items = fileManager.getChildren(dir, filter);
             return new RestContent(createFileItems(items));
         } catch (SecurityException e) {
             return new RestContent(e.getMessage());
@@ -106,8 +109,9 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
     @Endpoint
     public RestContent listDir() {
         String dir = getRequest().getParameter("dir");
+        String filter = getRequest().getParameter("filter");
 
-        return getDirContent(Paths.get(dir));
+        return getDirContent(Paths.get(dir), filter);
     }
 
     @Endpoint
@@ -123,13 +127,13 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
             return new RestOpenPathResponse("Path is not absolute");
 
         if (Files.isDirectory(path))
-            return new RestOpenPathResponse(getDirContent(path), null, dir);
+            return new RestOpenPathResponse(getDirContent(path, null), null, dir);
 
         if (Files.isRegularFile(path)) {
             if (!fileAccessManager.isFileVisible(path))
                 return new RestOpenPathResponse(fileAccessManager.errorMessage(path));
 
-            return new RestOpenPathResponse(getDirContent(path.getParent()), path.toString(), path.getParent().toString());
+            return new RestOpenPathResponse(getDirContent(path.getParent(), null), path.toString(), path.getParent().toString());
         }
 
         if (!fileAccessManager.isDirectoryVisible(path)) {

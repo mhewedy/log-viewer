@@ -1,5 +1,7 @@
 FROM maven:3.8-openjdk-17-slim as build
 
+MAINTAINER Mohammad Hewedy (mhewedy@gmail.com)
+
 WORKDIR /build
 
 COPY . .

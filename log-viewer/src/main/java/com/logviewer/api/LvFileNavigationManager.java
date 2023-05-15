@@ -14,7 +14,7 @@ public interface LvFileNavigationManager {
      * @param path Directory to list or {@code null}.
      */
     @NonNull
-    List<LvFsItem> getChildren(@Nullable Path path) throws SecurityException, IOException;
+    List<LvFsItem> getChildren(@Nullable Path path, String filter) throws SecurityException, IOException;
 
     @Nullable
     Path getDefaultDirectory();

@@ -52,8 +52,8 @@ public class LvConfigBase {
     }
 
     @Bean
-    public LvFileNavigationManager lvFileNavigationManager(LvFileAccessManager fileAccessManager) {
-        return new LvFileNavigationManagerImpl(fileAccessManager);
+    public LvFileNavigationManager lvFileNavigationManager(LvFileAccessManager fileAccessManager, LogService logService) {
+        return new LvFileNavigationManagerImpl(fileAccessManager, logService);
     }
 
     @Bean

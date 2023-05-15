@@ -24,7 +24,7 @@ public class FileManagerTest extends AbstractLogTest {
     public void testList() throws IOException {
         LvFileNavigationManagerImpl manager = getCommonContext().getBean(LvFileNavigationManagerImpl.class);
 
-        List<LvFileNavigationManager.LvFsItem> roots = manager.getChildren(null);
+        List<LvFileNavigationManager.LvFsItem> roots = manager.getChildren(null, null);
         assert roots.size() > 0;
         assert roots.stream().allMatch(p -> p.getPath().getParent() == null);
 
@@ -44,18 +44,18 @@ public class FileManagerTest extends AbstractLogTest {
         Path log2 = subdir2.resolve("2.log");
         Files.createFile(log2);
 
-        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir), f -> f.getPath(), subdir1, subdir2);
-        TestUtils.assertEqualsUnorder(manager.getChildren(subdir1), f -> f.getPath(), aLog, bLog);
-        TestUtils.assertEqualsUnorder(manager.getChildren(subdir2), f -> f.getPath(), log2);
+        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir, null), f -> f.getPath(), subdir1, subdir2);
+        TestUtils.assertEqualsUnorder(manager.getChildren(subdir1, null), f -> f.getPath(), aLog, bLog);
+        TestUtils.assertEqualsUnorder(manager.getChildren(subdir2, null), f -> f.getPath(), log2);
 
         LvFileAccessManagerImpl accessManager = getCommonContext().getBean(LvFileAccessManagerImpl.class);
 
         accessManager.setPaths(Collections.singletonList(PathPattern.directory(subdir2)));
 
-        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir), f -> f.getPath(), subdir2);
-        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir.getParent()), f -> f.getPath(), tmpDir);
-        TestUtils.assertError(SecurityException.class, () -> manager.getChildren(subdir1));
-        TestUtils.assertEqualsUnorder(manager.getChildren(subdir2), f -> f.getPath(), log2);
+        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir, null), f -> f.getPath(), subdir2);
+        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir.getParent(), null), f -> f.getPath(), tmpDir);
+        TestUtils.assertError(SecurityException.class, () -> manager.getChildren(subdir1, null));
+        TestUtils.assertEqualsUnorder(manager.getChildren(subdir2, null), f -> f.getPath(), log2);
 
         try (Snapshot snapshot = getLogService().openLog(aLog.toString(), LogService.DEFAULT_FORMAT).createSnapshot()) {
             assert snapshot.getError() instanceof DirectoryNotVisibleException;
@@ -68,10 +68,10 @@ public class FileManagerTest extends AbstractLogTest {
         PathPattern d = new PathPattern(subdir1, p -> p.toString().matches("a.*"), dir -> false);
         accessManager.setPaths(Collections.singletonList(d));
 
-        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir), f -> f.getPath(), subdir1);
-        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir.getParent()), f -> f.getPath(), tmpDir);
-        TestUtils.assertError(SecurityException.class, () -> manager.getChildren(subdir2));
-        TestUtils.assertEqualsUnorder(manager.getChildren(subdir1), f -> f.getPath(), aLog);
+        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir, null), f -> f.getPath(), subdir1);
+        TestUtils.assertEqualsUnorder(manager.getChildren(tmpDir.getParent(), null), f -> f.getPath(), tmpDir);
+        TestUtils.assertError(SecurityException.class, () -> manager.getChildren(subdir2, null));
+        TestUtils.assertEqualsUnorder(manager.getChildren(subdir1, null), f -> f.getPath(), aLog);
 
         try (Snapshot snapshot = getLogService().openLog(bLog.toString(), LogService.DEFAULT_FORMAT).createSnapshot()) {
             assert snapshot.getError() instanceof DirectoryNotVisibleException;
