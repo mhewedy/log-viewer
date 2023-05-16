@@ -2,10 +2,9 @@ package com.logviewer.impl;
 
 import com.logviewer.api.LvFileAccessManager;
 import com.logviewer.api.LvFileNavigationManager;
-import com.logviewer.data2.*;
-import com.logviewer.web.session.SessionAdapter;
-import com.logviewer.web.session.tasks.SearchPattern;
-import com.logviewer.web.session.tasks.SearchTask;
+import com.logviewer.data2.Log;
+import com.logviewer.data2.LogService;
+import com.logviewer.utils.Grep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,25 +12,13 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channel;
-import java.nio.channels.Channels;
-import java.nio.channels.SeekableByteChannel;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class LvFileNavigationManagerImpl implements LvFileNavigationManager {
@@ -115,10 +102,9 @@ public class LvFileNavigationManagerImpl implements LvFileNavigationManager {
         }
 
         Log log = logService.openLog(fsItem.getPath().toString());
+
         try (Log.LogSnapshot snapshot = (Log.LogSnapshot) log.createSnapshot()) {
-            BufferedReader br =
-                    new BufferedReader(Channels.newReader(snapshot.getChannel(), StandardCharsets.UTF_8));
-            return br.lines().parallel().anyMatch(it -> it.contains(filter));
+            return Grep.grep(snapshot.getDataRealFile().toFile(), filter);
         } catch (Exception e) {
             LOG.error(e.getMessage());
             return false;

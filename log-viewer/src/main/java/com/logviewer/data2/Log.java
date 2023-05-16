@@ -249,7 +249,7 @@ public class Log implements LogView {
             return lastModification;
         }
 
-        private Path getDataRealFile() throws IOException {
+        public Path getDataRealFile() throws IOException {
             Path res = realDataFile;
             if (res == null) {
                 synchronized (realFileMux) {
@@ -275,7 +275,7 @@ public class Log implements LogView {
             return res;
         }
 
-        public SeekableByteChannel getChannel() throws IOException {
+        private SeekableByteChannel getChannel() throws IOException {
             if (channel == null) {
                 if (error != null)
                     throw new IOException(error);
