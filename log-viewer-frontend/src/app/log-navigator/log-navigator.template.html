@@ -71,7 +71,17 @@
                 <input #searchField type="text" name="typedText" aria-describedby="basic-addon2"
                        class="filter-input"
                        [style.visibility]="filterOpened ? 'visible' : 'hidden'"
+                       title="enter filter text"
                        [(ngModel)]="typedText" (ngModelChange)="filterChanged()">
+
+                <input type="date" name="filterStartDateText" aria-describedby="basic-addon2"
+                       [style.visibility]="filterOpened ? 'visible' : 'hidden'"
+                       title="filter start date"
+                       [(ngModel)]="filterStartDate" (ngModelChange)="filterChanged()">
+                <input type="date" name="filterEndDateText" aria-describedby="basic-addon2"
+                       [style.visibility]="filterOpened ? 'visible' : 'hidden'"
+                       title="filter end date"
+                       [(ngModel)]="filterEndDate" (ngModelChange)="filterChanged()">
             </div>
 
             <img *ngIf="dirContentLoading.loading" src="assets/progress.gif">

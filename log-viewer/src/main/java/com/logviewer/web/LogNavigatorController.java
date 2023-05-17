@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDate;
 import java.util.*;
 
 public class LogNavigatorController extends AbstractRestRequestHandler {
@@ -73,7 +74,7 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
     /**
      * @return {error: string, content: FsItem[]}
      */
-    private RestContent getDirContent(@Nullable Path dir, @Nullable String filter) {
+    private RestContent getDirContent(@Nullable Path dir, @Nullable LvFileNavigationManager.Filter filter) {
         if (!isFileTreeAllowed())
             return new RestContent("File system navigation is disabled");
 
@@ -109,9 +110,18 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
     @Endpoint
     public RestContent listDir() {
         String dir = getRequest().getParameter("dir");
-        String filter = getRequest().getParameter("filter");
+        return getDirContent(Paths.get(dir), getFilter());
+    }
 
-        return getDirContent(Paths.get(dir), filter);
+    private LvFileNavigationManager.Filter getFilter() {
+        LvFileNavigationManager.Filter filter = null;
+        var text = getRequest().getParameter("filterText");
+        var startDate = LocalDate.parse(getRequest().getParameter("filterStartDate"));
+        var endDate = LocalDate.parse(getRequest().getParameter("filterEndDate"));
+        if (StringUtils.hasText(text)) {
+            filter = new LvFileNavigationManager.Filter(text, startDate, endDate);
+        }
+        return filter;
     }
 
     @Endpoint

@@ -53,6 +53,10 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
 
     fileToUpload: File | null = null;
 
+    filterStartDate: string = this.getDateInIsoFormat(new Date(new Date().setDate(new Date().getDate() - 10)));
+
+    filterEndDate: string = this.getDateInIsoFormat(new Date());
+
     constructor(
         private http: HttpClient,
         public fwService: FavoritesService,
@@ -130,7 +134,14 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
         this.visibleDirItems = null;
 
         this.dirContentLoading.process(
-            this.http.get<DirContent>('rest/navigator/listDir', {params: {dir, 'filter': this.typedText}}),
+            this.http.get<DirContent>('rest/navigator/listDir', {
+                params: {
+                    dir,
+                    'filterText': this.typedText,
+                    'filterStartDate': this.filterStartDate,
+                    'filterEndDate': this.filterEndDate,
+                }
+            }),
             items => {
                 if (dir !== this.currentDir) {
                     return;
@@ -139,6 +150,10 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
                 this.setDirContent(items);
             }
         );
+    }
+
+    private getDateInIsoFormat(d: Date): string {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
     private closeSearch() {

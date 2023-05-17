@@ -6,15 +6,17 @@ import org.springframework.lang.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface LvFileNavigationManager {
 
     /**
-     * @param path Directory to list or {@code null}.
+     * @param path      Directory to list or {@code null}.
+     * @param filter
      */
     @NonNull
-    List<LvFsItem> getChildren(@Nullable Path path, String filter) throws SecurityException, IOException;
+    List<LvFsItem> getChildren(@Nullable Path path, Filter filter) throws SecurityException, IOException;
 
     @Nullable
     Path getDefaultDirectory();
@@ -31,5 +33,8 @@ public interface LvFileNavigationManager {
 
         @Nullable
         Long getModificationTime();
+    }
+
+    record Filter(String text, LocalDate startDate, LocalDate endDate) {
     }
 }

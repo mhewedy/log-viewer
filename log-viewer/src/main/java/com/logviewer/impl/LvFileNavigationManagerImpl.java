@@ -10,13 +10,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -59,8 +61,7 @@ public class LvFileNavigationManagerImpl implements LvFileNavigationManager {
 
     @NonNull
     @Override
-    public List<LvFsItem> getChildren(@Nullable Path path, @Nullable String filter)
-            throws SecurityException, IOException {
+    public List<LvFsItem> getChildren(@Nullable Path path, Filter filter) throws SecurityException, IOException {
 
         if (path != null && !path.isAbsolute())
             throw new SecurityException("path must be absolute");
@@ -84,7 +85,7 @@ public class LvFileNavigationManagerImpl implements LvFileNavigationManager {
                     .map(it -> (LvFsItem) LvFsItemImpl.create(it))
                     .filter(Objects::nonNull);
 
-            if (StringUtils.hasText(filter)) {
+            if (filter != null) {
                 fsItems = fsItems.parallel().filter(it -> containsText(it, filter));
             }
 
@@ -95,16 +96,25 @@ public class LvFileNavigationManagerImpl implements LvFileNavigationManager {
         }
     }
 
-    private boolean containsText(LvFsItem fsItem, String filter) {
+    private boolean containsText(LvFsItem fsItem, Filter filter) {
         if (fsItem.isDirectory()) {
             LOG.debug("FsItem is directory{}", fsItem);
+            return false;
+        }
+
+        assert fsItem.getModificationTime() != null;
+
+        LocalDate modificationDate = Instant.ofEpochMilli(fsItem.getModificationTime())
+                .atZone(ZoneId.systemDefault()).toLocalDate();
+        if (modificationDate.isBefore(filter.startDate()) || modificationDate.isAfter(filter.endDate())) {
+            LOG.debug("FSItem is out of filter range: {}, {}", fsItem, filter);
             return false;
         }
 
         Log log = logService.openLog(fsItem.getPath().toString());
 
         try (Log.LogSnapshot snapshot = (Log.LogSnapshot) log.createSnapshot()) {
-            return Grep.grep(snapshot.getDataRealFile().toFile(), filter);
+            return Grep.grep(snapshot.getDataRealFile().toFile(), filter.text());
         } catch (Exception e) {
             LOG.error(e.getMessage());
             return false;
