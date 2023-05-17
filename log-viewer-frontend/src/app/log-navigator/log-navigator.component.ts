@@ -53,7 +53,7 @@ export class LogNavigatorComponent implements OnInit, AfterViewInit {
 
     fileToUpload: File | null = null;
 
-    filterStartDate: string = this.getDateInIsoFormat(new Date(new Date().setDate(new Date().getDate() - 10)));
+    filterStartDate: string = this.getDateInIsoFormat(new Date(new Date().setDate(new Date().getDate() - 2)));
 
     filterEndDate: string = this.getDateInIsoFormat(new Date());
 

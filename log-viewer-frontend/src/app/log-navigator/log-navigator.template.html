@@ -70,6 +70,7 @@
                 &nbsp;
                 <input #searchField type="text" name="typedText" aria-describedby="basic-addon2"
                        class="filter-input"
+                       placeholder="Enter text to filter"
                        [style.visibility]="filterOpened ? 'visible' : 'hidden'"
                        title="enter filter text"
                        [(ngModel)]="typedText" (ngModelChange)="filterChanged()">

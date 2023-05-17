@@ -116,10 +116,11 @@ public class LogNavigatorController extends AbstractRestRequestHandler {
     private LvFileNavigationManager.Filter getFilter() {
         LvFileNavigationManager.Filter filter = null;
         var text = getRequest().getParameter("filterText");
-        var startDate = LocalDate.parse(getRequest().getParameter("filterStartDate"));
-        var endDate = LocalDate.parse(getRequest().getParameter("filterEndDate"));
         if (StringUtils.hasText(text)) {
-            filter = new LvFileNavigationManager.Filter(text, startDate, endDate);
+            filter = new LvFileNavigationManager.Filter(text,
+                    LocalDate.parse(getRequest().getParameter("filterStartDate")),
+                    LocalDate.parse(getRequest().getParameter("filterEndDate"))
+            );
         }
         return filter;
     }
