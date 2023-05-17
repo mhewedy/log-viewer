@@ -72,16 +72,15 @@
                        class="filter-input"
                        placeholder="Enter text to filter"
                        [style.visibility]="filterOpened ? 'visible' : 'hidden'"
-                       title="enter filter text"
                        [(ngModel)]="typedText" (ngModelChange)="filterChanged()">
 
                 <input type="date" name="filterStartDateText" aria-describedby="basic-addon2"
                        [style.visibility]="filterOpened ? 'visible' : 'hidden'"
-                       title="filter start date"
+                       title="filter start date" onkeydown="return false"
                        [(ngModel)]="filterStartDate" (ngModelChange)="filterChanged()">
                 <input type="date" name="filterEndDateText" aria-describedby="basic-addon2"
                        [style.visibility]="filterOpened ? 'visible' : 'hidden'"
-                       title="filter end date"
+                       title="filter end date" onkeydown="return false"
                        [(ngModel)]="filterEndDate" (ngModelChange)="filterChanged()">
             </div>
 
