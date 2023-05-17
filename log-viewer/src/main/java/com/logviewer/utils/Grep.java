@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Grep {
 
@@ -13,8 +14,8 @@ public class Grep {
         try {
             return Runtime.getRuntime().exec(
                     new String[]{"sh", "-c", "grep -l %s %s".formatted(filter, f.getAbsolutePath())}
-            ).waitFor() == 0;
-        } catch (Exception e) {
+            ).exitValue() == 0;
+        } catch (IOException e) {
             LOG.error(e.getMessage());
             return false;
         }
