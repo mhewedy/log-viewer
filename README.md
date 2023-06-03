@@ -53,3 +53,14 @@ The idea to filter logs without indexing sounds questionable. If the filter sett
 the system has to scan the entire file to make sure that no visible events exist. Also, each search can perform a full scan of the log.
 Actually, the full scan is not a big problem, the parser works fast enough. Parsing 1Gb file takes 3,5 sec on my machine. It is viable.<br>
 Setting a date range filter can speed up the tool a lot because only events from the specified date range will be considered.
+
+##### Additional features
+- add support for tgz archive files (merged into the base repository)
+- sort files by modified date desc 
+- allow to upload log files to do analysis on the go
+- disable websockets on clientside in case client has issues with websocket
+- add support for tmp files
+- implement filter in the list dir
+
+##### Docker
+see https://hub.docker.com/r/mhewedy/log-viewer
